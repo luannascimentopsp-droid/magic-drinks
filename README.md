@@ -31,7 +31,7 @@ Site mobile-first para apresentar a carta Magic Drinks e coletar pedidos de orç
 
 O cliente usa o site sem login. O formulário salva o orçamento no projeto Supabase exclusivo do Magic Drinks e abre uma mensagem pronta para o WhatsApp. A política de segurança permite ao público apenas inserir pedidos novos; consultar pedidos, eventos, lembretes e financeiro exige uma conta autorizada do proprietário. Este projeto não usa o banco do Metal & Forma nem o da Barbearia.
 
-O painel do proprietário fica em `painel.html`. Depois que o e-mail do Marcos for definido, crie a conta dele no Supabase Auth e autorize o respectivo usuário na tabela `md_owners`, conforme `supabase/SETUP.md`.
+O painel privado do proprietário fica em `painel.html`. A conta autorizada pode solicitar a troca do e-mail (confirmada pelo Supabase) e atualizar a senha em **Conta e acesso**.
 
 ## Instalar no celular
 

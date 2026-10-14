@@ -1,4 +1,4 @@
-const CACHE_NAME = "magic-drinks-static-v2";
+const CACHE_NAME = "magic-drinks-static-v3";
 const APP_FILES = [
   "./",
   "./index.html",

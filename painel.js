@@ -30,6 +30,12 @@ async function confirmOwner(){
   return Boolean(data);
 }
 
+async function loadAccountProfile(){
+  const {data:{user},error}=await db.auth.getUser();
+  if(error){setMessage(`Não foi possível carregar a conta: ${error.message}`);return;}
+  document.querySelector("#account-current-email").textContent=user?.email||"—";
+}
+
 async function loadData(){
   setMessage("Atualizando dados…");
   const [quoteResult,eventResult,financeResult,reminderResult]=await Promise.all([
@@ -108,10 +114,35 @@ document.querySelector("#login-form").addEventListener("submit",async event=>{
   const {error}=await db.auth.signInWithPassword({email:form.get("email"),password:form.get("password")});
   if(error){loginMessage.textContent="Não foi possível entrar. Confira seus dados e tente de novo.";return;}
   try{if(!await confirmOwner()){await db.auth.signOut();loginMessage.textContent="Esta conta ainda não foi autorizada como proprietária do painel.";return;}}catch(error){await db.auth.signOut();loginMessage.textContent=`A configuração do banco ainda não está pronta: ${error.message}`;return;}
-  setLoggedIn(true);await loadData();
+  setLoggedIn(true);await loadAccountProfile();await loadData();
 });
 
 document.querySelector("#logout-button").addEventListener("click",async()=>{if(db)await db.auth.signOut();showLogin("Sessão encerrada.");});
+document.querySelector("#account-email-form").addEventListener("submit",async event=>{
+  event.preventDefault();
+  const message=document.querySelector("#account-email-message");message.textContent="";
+  const email=new FormData(event.currentTarget).get("email").trim();
+  const {data:{user},error:readError}=await db.auth.getUser();
+  if(readError||!user){message.textContent="Sua sessão expirou. Entre novamente para alterar o e-mail.";return;}
+  if(email.toLowerCase()===String(user.email||"").toLowerCase()){message.textContent="Esse já é o e-mail atual da conta.";return;}
+  const {error}=await db.auth.updateUser({email});
+  if(error){message.textContent=`Não foi possível solicitar a troca: ${error.message}`;return;}
+  message.textContent="Solicitação enviada. Confirme o novo e-mail pela mensagem do Supabase para concluir a troca.";
+  event.currentTarget.reset();
+});
+document.querySelector("#account-password-form").addEventListener("submit",async event=>{
+  event.preventDefault();
+  const form=event.currentTarget;
+  const message=document.querySelector("#account-password-message");message.textContent="";
+  const values=new FormData(form);
+  const password=values.get("password");
+  if(password!==values.get("password_confirmation")){message.textContent="As senhas não conferem.";return;}
+  if(password.length<8){message.textContent="Use uma senha com pelo menos 8 caracteres.";return;}
+  const {error}=await db.auth.updateUser({password});
+  if(error){message.textContent=`Não foi possível atualizar a senha: ${error.message}`;return;}
+  form.reset();
+  message.textContent="Senha atualizada. Use a nova senha no próximo acesso.";
+});
 document.querySelector("#refresh-button").addEventListener("click",loadData);
 document.querySelectorAll(".dash-tab").forEach(button=>button.addEventListener("click",()=>{
   document.querySelectorAll(".dash-tab").forEach(tab=>tab.classList.toggle("active",tab===button));
@@ -200,5 +231,5 @@ document.addEventListener("DOMContentLoaded",async()=>{
   const {data:{session}}=await db.auth.getSession();
   if(!session)return;
   try{if(!await confirmOwner()){await db.auth.signOut();showLogin("Esta conta ainda não foi autorizada como proprietária do painel.");return;}}catch(error){showLogin(`O banco ainda não está configurado: ${error.message}`);return;}
-  setLoggedIn(true);await loadData();
+  setLoggedIn(true);await loadAccountProfile();await loadData();
 });
