@@ -1,0 +1,20 @@
+{
+  "id": "./",
+  "name": "Magic Drinks — Bar para eventos",
+  "short_name": "Magic Drinks",
+  "description": "Conheça a carta de drinks e solicite um orçamento para seu evento.",
+  "lang": "pt-BR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#080706",
+  "theme_color": "#080706",
+  "icons": [
+    { "src": "assets/app-icon-192.svg", "sizes": "192x192", "type": "image/svg+xml", "purpose": "any maskable" },
+    { "src": "assets/app-icon.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Pedir orçamento", "short_name": "Orçamento", "url": "./#orcamento", "icons": [{ "src": "assets/app-icon-192.svg", "sizes": "192x192", "type": "image/svg+xml" }] },
+    { "name": "Abrir painel", "short_name": "Painel", "url": "./painel.html", "icons": [{ "src": "assets/app-icon-192.svg", "sizes": "192x192", "type": "image/svg+xml" }] }
+  ]
+}
